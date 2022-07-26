@@ -28,7 +28,7 @@ public class AdminController {
 	private MessageSender messageSender;
 
 	@PostMapping("/save")
-	public CommonResponse createAdmin(@Valid @RequestBody AdminDTO adminDTO) {
+	public CommonResponse<?> createAdmin(@Valid @RequestBody AdminDTO adminDTO) {
 		return adminService.createAdmin(adminDTO);
 	}
 

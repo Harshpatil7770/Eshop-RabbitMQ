@@ -34,8 +34,8 @@ public class Admin {
 	@Size(min = 1, max = 15, message = "atleast enter one character")
 	private String lastName;
 
-	@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
-	@Size(message = "Enter Valid Mail")
+	//@Pattern(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+	//@Size(message = "Enter Valid Mail")
 	private String emailId;
 
 	private long mobNo;

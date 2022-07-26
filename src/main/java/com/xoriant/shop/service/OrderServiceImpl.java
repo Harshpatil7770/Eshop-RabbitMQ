@@ -1,18 +1,15 @@
 package com.xoriant.shop.service;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.auditing.CurrentDateTimeProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.xoriant.shop.dao.OrderRepo;
 import com.xoriant.shop.dao.ProductRepo;
-import com.xoriant.shop.dto.OrderDTO;
 import com.xoriant.shop.model.Order;
 import com.xoriant.shop.model.Product;
 import com.xoriant.shop.model.Status;
@@ -51,6 +48,9 @@ public class OrderServiceImpl implements OrderService {
 			order.setTotalAmount(totalAmount);
 
 			Product updateProduct = productRepo.findById(productId).orElse(null);
+			if (updateProduct == null) {
+				return new CommonResponse<String>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+			}
 			int newQuantity = existingProduct.get().getQuantity() - quantity;
 			updateProduct.setQuantity(newQuantity);
 			if (newQuantity > 0) {

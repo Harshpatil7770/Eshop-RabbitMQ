@@ -1,8 +1,5 @@
 package com.xoriant.shop.service;
 
-import java.util.List;
-
-import com.xoriant.shop.dto.BrandDTO;
 import com.xoriant.shop.dto.CategoryDTO;
 import com.xoriant.shop.utility.CommonResponse;
 

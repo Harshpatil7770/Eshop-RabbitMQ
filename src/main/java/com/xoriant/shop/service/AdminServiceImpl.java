@@ -45,17 +45,25 @@ public class AdminServiceImpl implements AdminService {
 		try {
 			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
 			if (!existingAdmin.isPresent()) {
-				return new CommonResponse<String>("Admin Record Not Found in Database !",StatusCode.NOT_FOUND,HttpStatus.NOT_FOUND);
+				return new CommonResponse<String>("Admin Record Not Found in Database !", StatusCode.NOT_FOUND,
+						HttpStatus.NOT_FOUND);
 			}
 			if (!existingAdmin.get().getPassword().equals(oldPassword)) {
-				return new CommonResponse<String>("Old Password not matches!",StatusCode.NOT_FOUND,HttpStatus.NOT_FOUND);
+				return new CommonResponse<String>("Old Password not matches!", StatusCode.NOT_FOUND,
+						HttpStatus.NOT_FOUND);
 			}
 			Admin updateAdminDetails = adminRepo.findById(adminId).orElse(null);
+			if (updateAdminDetails == null) {
+				return new CommonResponse<String>("Admin Record Not Found in Database !", StatusCode.NOT_FOUND,
+						HttpStatus.NOT_FOUND);
+			}
+
 			updateAdminDetails.setPassword(adminDTO.getPassword());
 			adminRepo.save(updateAdminDetails);
-			return new CommonResponse<String>("Password Changed Succesfully!",StatusCode.OK,HttpStatus.OK);
+			return new CommonResponse<String>("Password Changed Succesfully!", StatusCode.OK, HttpStatus.OK);
 		} catch (Exception e) {
-			return new CommonResponse<String>(e.getMessage(),StatusCode.INTERNAL_SERVER_ERROR,HttpStatus.INTERNAL_SERVER_ERROR);
+			return new CommonResponse<String>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
