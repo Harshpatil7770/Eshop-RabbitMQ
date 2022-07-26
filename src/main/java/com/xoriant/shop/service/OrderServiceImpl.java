@@ -26,22 +26,20 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private ProductRepo productRepo;
 
-	private Order order;
-
 	@Override
 	public CommonResponse<?> addNewOrder(long productId, int quantity) {
 		try {
 			Optional<Product> existingProduct = productRepo.findById(productId);
 			if (!existingProduct.isPresent()) {
-				return new CommonResponse<String>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
-			order = new Order();
+			Order order = new Order();
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 			LocalDateTime now = LocalDateTime.now();
 			order.setOrderDate(dtf.format(now));
 			order.setQuantity(quantity);
 			if (existingProduct.get().getQuantity() < quantity) {
-				return new CommonResponse<String>(Constant.NOT_AVALABLE, StatusCode.BAD_REQUEST,
+				return new CommonResponse<>(Constant.NOT_AVALABLE, StatusCode.BAD_REQUEST,
 						HttpStatus.BAD_REQUEST);
 			}
 			double totalAmount = quantity * existingProduct.get().getPrice();
@@ -49,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
 			Product updateProduct = productRepo.findById(productId).orElse(null);
 			if (updateProduct == null) {
-				return new CommonResponse<String>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			int newQuantity = existingProduct.get().getQuantity() - quantity;
 			updateProduct.setQuantity(newQuantity);
@@ -60,10 +58,10 @@ public class OrderServiceImpl implements OrderService {
 			}
 			productRepo.save(updateProduct);
 			orderRepo.save(order);
-			return new CommonResponse<Order>(order, StatusCode.OK, HttpStatus.OK);
+			return new CommonResponse<>(order, StatusCode.OK, HttpStatus.OK);
 
 		} catch (Exception e) {
-			return new CommonResponse<String>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

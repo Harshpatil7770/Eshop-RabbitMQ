@@ -25,27 +25,25 @@ public class BrandServiceImpl implements BrandService {
 	@Autowired
 	private AdminRepo adminRepo;
 
-	private Brand brand;
-
 	@Override
 	public CommonResponse<?> addNewBrand(Long adminId, String password, BrandDTO brandDTO) {
 		try {
 			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
 			if (!existingAdmin.isPresent()) {
-				return new CommonResponse<String>(Constant.WRONG_ADMIN_ID,
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID,
 						StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			if (!existingAdmin.get().getPassword().equals(password)) {
-				return new CommonResponse<String>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND,
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND,
 						HttpStatus.NOT_FOUND);
 			}
 
-			brand = new Brand();
+			Brand brand = new Brand();
 			brand.setBrandName(brandDTO.getBrandName());
 			brandDao.save(brand);
-			return new CommonResponse<Brand>(brand, StatusCode.CREATED, HttpStatus.CREATED);
+			return new CommonResponse<>(brand, StatusCode.CREATED, HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new CommonResponse<String>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

@@ -24,25 +24,23 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private AdminRepo adminRepo;
 
-	private Category category;
-
 	@Override
 	public CommonResponse<?> addNewCategory(Long adminId, String password, CategoryDTO categoryDTO) {
 		try {
 			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
 			if (!existingAdmin.isPresent()) {
-				return new CommonResponse<String>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND,
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND,
 						HttpStatus.NOT_FOUND);
 			}
 			if (!existingAdmin.get().getPassword().equals(password)) {
-				return new CommonResponse<String>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
-			category = new Category();
+			Category category = new Category();
 			category.setCategoryName(categoryDTO.getCategoryName());
 			categoryRepo.save(category);
-			return new CommonResponse<Category>(category, StatusCode.CREATED, HttpStatus.CREATED);
+			return new CommonResponse<>(category, StatusCode.CREATED, HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new CommonResponse<String>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

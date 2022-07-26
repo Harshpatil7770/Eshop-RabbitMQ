@@ -35,31 +35,29 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private CategoryRepo categoryRepo;
 
-	private Product product;
-
 	@Override
 	public CommonResponse<?> addNewProduct(long adminId, String password, ProductDTO productDTO, long brandId,
 			long categoryId) {
 		try {
 			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
 			if (!existingAdmin.isPresent()) {
-				return new CommonResponse<String>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST,
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST,
 						HttpStatus.BAD_REQUEST);
 			}
 			if (!existingAdmin.get().getPassword().equals(password)) {
-				return new CommonResponse<String>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
 						HttpStatus.BAD_REQUEST);
 			}
 			Optional<Brand> existingBrand = brandDao.findById(brandId);
 			if (!existingBrand.isPresent()) {
-				return new CommonResponse<String>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			Optional<Category> existingCategory = categoryRepo.findById(categoryId);
 			if (!existingCategory.isPresent()) {
-				return new CommonResponse<String>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 
-			product = new Product();
+			Product product = new Product();
 			product.setProductName(productDTO.getProductName());
 			product.setPrice(productDTO.getPrice());
 			product.setQuantity(productDTO.getQuantity());
@@ -73,9 +71,9 @@ public class ProductServiceImpl implements ProductService {
 			product.setCategoryName(existingCategory.get().getCategoryName());
 
 			productRepo.save(product);
-			return new CommonResponse<Product>(product, StatusCode.CREATED, HttpStatus.CREATED);
+			return new CommonResponse<>(product, StatusCode.CREATED, HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new CommonResponse<String>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
