@@ -50,11 +50,11 @@ public class ProductServiceImpl implements ProductService {
 			}
 			Optional<Brand> existingBrand = brandDao.findById(brandId);
 			if (!existingBrand.isPresent()) {
-				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			Optional<Category> existingCategory = categoryRepo.findById(categoryId);
 			if (!existingCategory.isPresent()) {
-				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 
 			Product product = new Product();

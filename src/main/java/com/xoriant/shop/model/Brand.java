@@ -26,7 +26,7 @@ public class Brand {
 	@Basic(fetch = FetchType.EAGER)
 	private long brandId;
 
-	@Pattern(regexp = "[A-Za-z]*")
+	@Pattern(regexp = "^[a-zA-Z ]*$")
 	@Size(min = 1, max = 15, message = "Please enter atleast one character!")
 	private String brandName;
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xoriant.shop.dto.AdminDTO;
+import com.xoriant.shop.model.Admin;
 import com.xoriant.shop.msgsender.MessageSender;
 import com.xoriant.shop.service.AdminService;
 import com.xoriant.shop.utility.CommonResponse;

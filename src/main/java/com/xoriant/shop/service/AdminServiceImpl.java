@@ -10,6 +10,7 @@ import com.xoriant.shop.dao.AdminRepo;
 import com.xoriant.shop.dto.AdminDTO;
 import com.xoriant.shop.model.Admin;
 import com.xoriant.shop.utility.CommonResponse;
+import com.xoriant.shop.utility.Constant;
 import com.xoriant.shop.utility.StatusCode;
 
 @Service
@@ -43,22 +44,19 @@ public class AdminServiceImpl implements AdminService {
 		try {
 			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
 			if (!existingAdmin.isPresent()) {
-				return new CommonResponse<>("Admin Record Not Found in Database !", StatusCode.NOT_FOUND,
-						HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			if (!existingAdmin.get().getPassword().equals(oldPassword)) {
-				return new CommonResponse<>("Old Password not matches!", StatusCode.NOT_FOUND,
-						HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			Admin updateAdminDetails = adminRepo.findById(adminId).orElse(null);
 			if (updateAdminDetails == null) {
-				return new CommonResponse<>("Admin Record Not Found in Database !", StatusCode.NOT_FOUND,
-						HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 
 			updateAdminDetails.setPassword(adminDTO.getPassword());
 			adminRepo.save(updateAdminDetails);
-			return new CommonResponse<String>("Password Changed Succesfully!", StatusCode.OK, HttpStatus.OK);
+			return new CommonResponse<String>(Constant.PASSWORD_CHANGED, StatusCode.OK, HttpStatus.OK);
 		} catch (Exception e) {
 			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
 					HttpStatus.INTERNAL_SERVER_ERROR);

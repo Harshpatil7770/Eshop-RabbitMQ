@@ -26,11 +26,11 @@ public class Admin {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long adminId;
 
-	@Pattern(regexp = "[A-Za-z]*")
+	@Pattern(regexp = "^[a-zA-Z ]*$")
 	@Size(min = 1, max = 15, message = "atleast enter one character")
 	private String firstName;
 
-	@Pattern(regexp = "[A-Za-z]*")
+	@Pattern(regexp = "^[a-zA-Z ]*$")
 	@Size(min = 1, max = 15, message = "atleast enter one character")
 	private String lastName;
 

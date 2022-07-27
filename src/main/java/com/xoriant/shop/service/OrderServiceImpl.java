@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
 		try {
 			Optional<Product> existingProduct = productRepo.findById(productId);
 			if (!existingProduct.isPresent()) {
-				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			Order order = new Order();
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 			order.setOrderDate(dtf.format(now));
 			order.setQuantity(quantity);
 			if (existingProduct.get().getQuantity() < quantity) {
-				return new CommonResponse<>(Constant.NOT_AVALABLE, StatusCode.BAD_REQUEST,
+				return new CommonResponse<>(Constant.QUANTITY_NOT_AVALABLE, StatusCode.BAD_REQUEST,
 						HttpStatus.BAD_REQUEST);
 			}
 			double totalAmount = quantity * existingProduct.get().getPrice();
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
 			Product updateProduct = productRepo.findById(productId).orElse(null);
 			if (updateProduct == null) {
-				return new CommonResponse<>(Constant.NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
 			int newQuantity = existingProduct.get().getQuantity() - quantity;
 			updateProduct.setQuantity(newQuantity);
