@@ -3,12 +3,12 @@ package com.xoriant.shop.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ class CategoryServiceImplTest {
 	private Category category;
 	private Category category1;
 
-	private List<CategoryDTO> categoryLists;
+	private List<CategoryDTO> categoryDTOLists;
 
 	private static final long ADMIN_ID = 101;
 	private static final String PASSWORD = "smith@123";
@@ -61,9 +61,9 @@ class CategoryServiceImplTest {
 		category = new Category(categoryDTO.getCategoryId(), categoryDTO.getCategoryName());
 		category1 = new Category(categoryDTO1.getCategoryId(), categoryDTO1.getCategoryName());
 
-		categoryLists = new ArrayList<>();
-		categoryLists.add(categoryDTO);
-		categoryLists.add(categoryDTO1);
+		categoryDTOLists = new ArrayList<>();
+		categoryDTOLists.add(categoryDTO);
+		categoryDTOLists.add(categoryDTO1);
 	}
 
 	@Test
@@ -184,7 +184,7 @@ class CategoryServiceImplTest {
 	@Test
 	void addNewListsOfCategory() {
 		List<Category> catLists = new ArrayList<Category>();
-		for (CategoryDTO newCategory : categoryLists) {
+		for (CategoryDTO newCategory : categoryDTOLists) {
 			Optional<Admin> existingAdmin = Optional.of(admin);
 			when(adminRepo.findById(ADMIN_ID)).thenReturn(existingAdmin);
 			Optional<Admin> checkAdmin = adminRepo.findById(ADMIN_ID);
@@ -200,7 +200,7 @@ class CategoryServiceImplTest {
 		}
 		assertEquals(
 				new CommonResponse<>(Constant.NEW_LISTS_OF_CATEGORIES_ADDED, StatusCode.CREATED, HttpStatus.CREATED),
-				categoryServiceImpl.addNewListsOfCategory(ADMIN_ID, PASSWORD, categoryLists));
+				categoryServiceImpl.addNewListsOfCategory(ADMIN_ID, PASSWORD, categoryDTOLists));
 	}
 
 	@Test
@@ -238,7 +238,7 @@ class CategoryServiceImplTest {
 			when(categoryRepo.save(updateCategory)).thenReturn(updateCategory);
 		}
 		assertEquals(new CommonResponse<>(Constant.UPDATED_LISTS_OF_CATEGORIES, StatusCode.CREATED, HttpStatus.CREATED),
-				categoryServiceImpl.updateListOfCategory(ADMIN_ID, PASSWORD, categoryLists));
+				categoryServiceImpl.updateListOfCategory(ADMIN_ID, PASSWORD, categoryDTOLists));
 
 	}
 
@@ -257,7 +257,7 @@ class CategoryServiceImplTest {
 					HttpStatus.BAD_REQUEST));
 		}
 
-		for (CategoryDTO newCategoryLists : categoryLists) {
+		for (CategoryDTO newCategoryLists : categoryDTOLists) {
 			category.setCategoryName(newCategoryLists.getCategoryName());
 			categoryRepo.save(category);
 			catLists.add(category);
@@ -285,5 +285,63 @@ class CategoryServiceImplTest {
 		assertEquals(new CommonResponse<>(existingCategory, StatusCode.OK, HttpStatus.OK),
 				categoryServiceImpl.findByCategoryName(ADMIN_ID, PASSWORD, "Mobile"));
 
+	}
+
+	@Test
+	void findAllCategoritesInAlphabeticalOrder() {
+
+		Optional<Admin> existingAdmin = Optional.of(admin);
+		when(adminRepo.findById(101l)).thenReturn(existingAdmin);
+		Optional<Admin> checkAdmin = adminRepo.findById(101l);
+		if (checkAdmin.get().getAdminId() != ADMIN_ID) {
+			assertThat(new CommonResponse<String>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST,
+					HttpStatus.BAD_REQUEST));
+		}
+		if (!checkAdmin.get().getPassword().equals(PASSWORD)) {
+			assertThat(new CommonResponse<String>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
+					HttpStatus.BAD_REQUEST));
+		}
+
+		List<Category> categoryLists = new ArrayList<>();
+		for (CategoryDTO existingCategory : categoryDTOLists) {
+			Category newCategory = new Category();
+			newCategory.setCategoryName(existingCategory.getCategoryName());
+			categoryRepo.save(newCategory);
+			categoryLists.add(newCategory);
+		}
+		when(categoryRepo.findAll()).thenReturn(categoryLists);
+		List<Category> alphabeticalOrder = categoryLists.stream()
+				.sorted((e1, e2) -> e1.getCategoryName().compareTo(e2.getCategoryName())).collect(Collectors.toList());
+		assertEquals(new CommonResponse<>(alphabeticalOrder, StatusCode.OK, HttpStatus.OK),
+				categoryServiceImpl.findAllCategoritesInAlphabeticalOrder(ADMIN_ID, PASSWORD));
+	}
+
+	@Test
+	void findAllCategoritesWithStartingCharacter() {
+		String firstLetter = "O";
+		Optional<Admin> existingAdmin = Optional.of(admin);
+		when(adminRepo.findById(101l)).thenReturn(existingAdmin);
+		Optional<Admin> checkAdmin = adminRepo.findById(101l);
+		if (checkAdmin.get().getAdminId() != ADMIN_ID) {
+			assertThat(new CommonResponse<String>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST,
+					HttpStatus.BAD_REQUEST));
+		}
+		if (!checkAdmin.get().getPassword().equals(PASSWORD)) {
+			assertThat(new CommonResponse<String>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
+					HttpStatus.BAD_REQUEST));
+		}
+
+		List<Category> categoryLists = new ArrayList<>();
+		for (CategoryDTO existingCategory : categoryDTOLists) {
+			Category newCategory = new Category();
+			newCategory.setCategoryName(existingCategory.getCategoryName());
+			categoryRepo.save(newCategory);
+			categoryLists.add(newCategory);
+		}
+		when(categoryRepo.findAll()).thenReturn(categoryLists);
+		List<Category> firstLetterCriteriaCategoryLists = categoryLists.stream()
+				.filter(e -> e.getCategoryName().startsWith(firstLetter)).collect(Collectors.toList());
+		assertEquals(new CommonResponse<>(firstLetterCriteriaCategoryLists, StatusCode.OK, HttpStatus.OK),
+				categoryServiceImpl.findAllCategoritesWithStartingCharacter(ADMIN_ID, PASSWORD, firstLetter));
 	}
 }

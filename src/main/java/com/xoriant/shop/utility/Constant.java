@@ -19,4 +19,8 @@ public class Constant {
 	public static final String UPDATED_LISTS_OF_CATEGORIES = "Update Lists Of Category Succesfully!";
 
 	public static final String PASSWORD_CHANGED = "Password Changed Succesfully!";
+
+	public static final String NEW_LISTS_OF_BRANDS_ADDED = "New Lists Of BRANDS Added Succesfully!";
+
+	public static final String UPDATED_LISTS_OF_BRANDS = "Update Lists Of Brand Succesfully!";
 }

@@ -16,4 +16,10 @@ public class OrderDTO {
 	private int quantity;
 
 	private double totalAmount;
+
+	private long productId;
+
+	private String productName;
+
+	private long userId;
 }

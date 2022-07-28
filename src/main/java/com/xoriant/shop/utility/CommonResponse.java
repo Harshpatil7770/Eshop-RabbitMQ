@@ -16,5 +16,6 @@ public class CommonResponse<T> {
 	private int statusCode;
 
 	private HttpStatus message;
+	
 
 }

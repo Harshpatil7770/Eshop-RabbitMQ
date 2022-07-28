@@ -7,8 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.xoriant.shop.dao.AdminRepo;
+import com.xoriant.shop.dao.UserRepo;
 import com.xoriant.shop.dto.AdminDTO;
+import com.xoriant.shop.dto.UserDTO;
 import com.xoriant.shop.model.Admin;
+import com.xoriant.shop.model.User;
 import com.xoriant.shop.utility.CommonResponse;
 import com.xoriant.shop.utility.Constant;
 import com.xoriant.shop.utility.StatusCode;
@@ -18,6 +21,9 @@ public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private AdminRepo adminRepo;
+
+	@Autowired
+	private UserRepo userRepo;
 
 	@Override
 	public CommonResponse<?> createAdmin(AdminDTO adminDTO) {
@@ -57,6 +63,72 @@ public class AdminServiceImpl implements AdminService {
 			updateAdminDetails.setPassword(adminDTO.getPassword());
 			adminRepo.save(updateAdminDetails);
 			return new CommonResponse<String>(Constant.PASSWORD_CHANGED, StatusCode.OK, HttpStatus.OK);
+		} catch (Exception e) {
+			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public CommonResponse<?> createUserAccount(long adminId, String password, UserDTO userDTO) {
+		try {
+
+			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
+			if (!existingAdmin.isPresent()) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+
+			}
+			if (!existingAdmin.get().getPassword().equals(password)) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+
+			}
+			User user = new User();
+			user.setUserId(userDTO.getUserId());
+			user.setUserFullName(userDTO.getUserFullName());
+			user.setGender(userDTO.getGender());
+			user.setUserName(userDTO.getUserName());
+			user.setPassword(userDTO.getPassword());
+			userRepo.save(user);
+
+			return new CommonResponse<>(user, StatusCode.CREATED, HttpStatus.CREATED);
+
+		} catch (Exception e) {
+			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@Override
+	public CommonResponse<?> updateUserAccount(long adminId, String password, UserDTO userDTO) {
+		try {
+
+			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
+			if (!existingAdmin.isPresent()) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+
+			}
+			if (!existingAdmin.get().getPassword().equals(password)) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+
+			}
+
+			Optional<User> existingUser = userRepo.findById(userDTO.getUserId());
+			if (!existingUser.isPresent()) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			}
+
+			User updateUserDetails = userRepo.findById(userDTO.getUserId()).orElse(null);
+			if (updateUserDetails == null) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+			}
+			updateUserDetails.setUserId(userDTO.getUserId());
+			updateUserDetails.setUserFullName(userDTO.getUserFullName());
+			updateUserDetails.setGender(userDTO.getGender());
+			updateUserDetails.setUserName(userDTO.getUserName());
+			updateUserDetails.setPassword(userDTO.getPassword());
+			userRepo.save(updateUserDetails);
+			return new CommonResponse<>(updateUserDetails, StatusCode.CREATED, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new CommonResponse<>(e.getMessage(), StatusCode.INTERNAL_SERVER_ERROR,
 					HttpStatus.INTERNAL_SERVER_ERROR);

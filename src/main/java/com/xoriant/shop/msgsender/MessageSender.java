@@ -20,4 +20,22 @@ public class MessageSender {
 	public void changePassword(String msg) {
 		rabbitTemplate.convertAndSend("passwordChangeQ", msg);
 	}
+
+	@Bean
+	public Queue addNewOrder() {
+		return new Queue("orderPlacedQ", false);
+	}
+
+	public void addNewOrder(String msg) {
+		rabbitTemplate.convertAndSend("orderPlacedQ", msg);
+	}
+
+	@Bean
+	public Queue cancelOrder() {
+		return new Queue("cancelOrderQ", false);
+	}
+
+	public void cancelOrder(String msg) {
+		rabbitTemplate.convertAndSend("cancelOrderQ", msg);
+	}
 }

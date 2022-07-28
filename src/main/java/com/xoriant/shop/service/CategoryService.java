@@ -20,4 +20,10 @@ public interface CategoryService {
 	CommonResponse<?> fetchAllCategories(Long adminId, String password);
 
 	CommonResponse<?> findByCategoryName(Long adminId, String password, String categoryName);
+
+	CommonResponse<?> findAllCategoritesInAlphabeticalOrder(Long adminId, String password);
+
+	CommonResponse<?> findAllCategoritesWithStartingCharacter(Long adminId, String password, String firstLetter);
+
+	void deleteCategory(Long adminId, String password, long categoryId);
 }

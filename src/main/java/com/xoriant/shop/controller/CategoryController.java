@@ -24,44 +24,57 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categoryService;
 
-	@PostMapping("/save/{adminId}/{password}")
+	@PostMapping("/{adminId}/{password}/save/")
 	public CommonResponse<?> addNewCategory(@Valid @PathVariable Long adminId, @PathVariable String password,
 			@RequestBody CategoryDTO categoryDTO) {
 		return categoryService.addNewCategory(adminId, password, categoryDTO);
 	}
 
-	@PutMapping("/update/{adminId}/{password}")
+	@PutMapping("/{adminId}/{password}/update")
 	public CommonResponse<?> updateCategory(@PathVariable Long adminId, @PathVariable String password,
 			@RequestBody CategoryDTO categoryDTO) {
 		return categoryService.updateCategory(adminId, password, categoryDTO);
 	}
 
-	@GetMapping("/find/{adminId}/{password}/{categoryId}")
+	@GetMapping("/{adminId}/{password}/find/{categoryId}")
 	public CommonResponse<?> findCategoryById(@PathVariable Long adminId, @PathVariable String password,
 			@PathVariable long categoryId) {
 		return categoryService.findCategoryById(adminId, password, categoryId);
 	}
 
-	@PostMapping("/saveAll/{adminId}/{password}")
+	@PostMapping("/{adminId}/{password}/saveAll")
 	public CommonResponse<?> addNewListsOfCategory(@Valid @PathVariable Long adminId, @PathVariable String password,
 			@RequestBody List<CategoryDTO> categoryDTO) {
 		return categoryService.addNewListsOfCategory(adminId, password, categoryDTO);
 	}
 
-	@PutMapping("/updateAll/{adminId}/{password}")
+	@PutMapping("/{adminId}/{password}//updateAll")
 	public CommonResponse<?> updateListOfCategory(@Valid @PathVariable Long adminId, @PathVariable String password,
 			@RequestBody List<CategoryDTO> categoryDTO) {
 		return categoryService.updateListOfCategory(adminId, password, categoryDTO);
 	}
 
-	@GetMapping("/findAll/{adminId}/{password}")
+	@GetMapping("/{adminId}/{password}/findAll")
 	public CommonResponse<?> fetchAllCategories(@PathVariable Long adminId, @PathVariable String password) {
 		return categoryService.fetchAllCategories(adminId, password);
 	}
 
-	@GetMapping("find-category/{adminId}/{password}/{categoryName}")
+	@GetMapping("/{adminId}/{password}/find-category/{categoryName}")
 	public CommonResponse<?> findByCategoryName(@PathVariable Long adminId, @PathVariable String password,
 			@PathVariable String categoryName) {
 		return categoryService.findByCategoryName(adminId, password, categoryName);
 	}
+
+	@GetMapping("/{adminId}/{password}/findAll/alphabeticalOrder")
+	public CommonResponse<?> findAllCategoritesInAlphabeticalOrder(@PathVariable Long adminId,
+			@PathVariable String password) {
+		return categoryService.findAllCategoritesInAlphabeticalOrder(adminId, password);
+	}
+
+	@GetMapping("/{adminId}/{password}/findAllBy/{firstLetter}")
+	public CommonResponse<?> findAllCategoritesWithStartingCharacter(@PathVariable Long adminId,
+			@PathVariable String password, @PathVariable String firstLetter) {
+		return categoryService.findAllCategoritesWithStartingCharacter(adminId, password, firstLetter);
+	}
+
 }

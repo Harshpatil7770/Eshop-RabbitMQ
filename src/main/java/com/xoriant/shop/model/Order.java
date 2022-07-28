@@ -26,5 +26,10 @@ public class Order {
 	private int quantity;
 
 	private double totalAmount;
+	
+	private long productId;
 
+	private String productName;
+	
+	private long userId;
 }

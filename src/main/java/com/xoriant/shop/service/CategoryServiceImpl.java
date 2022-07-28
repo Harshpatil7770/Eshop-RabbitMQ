@@ -2,8 +2,8 @@ package com.xoriant.shop.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -99,17 +99,14 @@ public class CategoryServiceImpl implements CategoryService {
 	public CommonResponse<?> addNewListsOfCategory(Long adminId, String password, List<CategoryDTO> categoryDTO) {
 		Category category = null;
 		try {
-
-			for (CategoryDTO newCategory : categoryDTO) {
-				Optional<Admin> existingAdmin = adminRepo.findById(adminId);
-				if (!existingAdmin.isPresent()) {
-					return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-				}
-				if (!existingAdmin.get().getPassword().equals(password)) {
-					return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND,
-							HttpStatus.NOT_FOUND);
-				}
+			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
+			if (!existingAdmin.isPresent()) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
 			}
+			if (!existingAdmin.get().getPassword().equals(password)) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+			}
+
 			for (CategoryDTO newCategory : categoryDTO) {
 
 				category = new Category();
@@ -207,5 +204,65 @@ public class CategoryServiceImpl implements CategoryService {
 		}
 	}
 
+	@Override
+	public CommonResponse<?> findAllCategoritesInAlphabeticalOrder(Long adminId, String password) {
+		try {
+
+			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
+			if (!existingAdmin.isPresent()) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			}
+			if (!existingAdmin.get().getPassword().equals(password)) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
+						HttpStatus.BAD_REQUEST);
+			}
+
+			List<Category> existingCategory = categoryRepo.findAll();
+			if (existingCategory.isEmpty()) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			}
+
+			List<Category> sortedCategoryLists = existingCategory.stream()
+					.sorted((e1, e2) -> e1.getCategoryName().compareTo(e2.getCategoryName()))
+					.collect(Collectors.toList());
+
+			return new CommonResponse<>(sortedCategoryLists, StatusCode.OK, HttpStatus.OK);
+		} catch (Exception e) {
+			return new CommonResponse<>(e.getMessage(), StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+		}
+
+	}
+
+	@Override
+	public CommonResponse<?> findAllCategoritesWithStartingCharacter(Long adminId, String password,
+			String firstLetter) {
+		try {
+			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
+			if (!existingAdmin.isPresent()) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			}
+			if (!existingAdmin.get().getPassword().equals(password)) {
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
+						HttpStatus.BAD_REQUEST);
+			}
+
+			List<Category> existingCategory = categoryRepo.findAll();
+			if (existingCategory.isEmpty()) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			}
+			List<Category> userEnteredCategoryLists = existingCategory.stream()
+					.filter((e) -> e.getCategoryName().startsWith(firstLetter)).collect(Collectors.toList());
+
+			return new CommonResponse<>(userEnteredCategoryLists, StatusCode.OK, HttpStatus.OK);
+		} catch (Exception e) {
+			return new CommonResponse<>(e.getMessage(), StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@Override
+	public void deleteCategory(Long adminId, String password, long categoryId) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

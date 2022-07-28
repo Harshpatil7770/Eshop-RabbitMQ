@@ -1,5 +1,8 @@
 package com.xoriant.shop.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,7 +10,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -15,30 +21,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "products")
+@Table(name = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "product_id")
-	private long productId;
+	private Long userId;
 
-	@Size(min = 1, max = 15, message = "Please enter atleast one character on product name!")
-	private String productName;
-
-	private double price;
-
-	private int quantity;
+	@Pattern(regexp = "^[a-zA-Z ]*$")
+	@Size(min = 1, max = 15, message = "atleast enter one character")
+	private String userFullName;
 
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	private Gender gender;
 
-	private String brandName;
+	@Column(name = "username")
+	private String userName;
 
-	private String categoryName;
-
+	private String password;
 
 }

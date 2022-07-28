@@ -4,5 +4,7 @@ import com.xoriant.shop.utility.CommonResponse;
 
 public interface OrderService {
 
-	CommonResponse<?> addNewOrder(long productId,int quantity);
+	CommonResponse<?> addNewOrder(long userId, String password, long productId, int quantity);
+
+	CommonResponse<?> cancelOrder(long userId, String password,long orderId);
 }
