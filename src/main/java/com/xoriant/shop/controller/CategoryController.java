@@ -21,6 +21,7 @@ import com.xoriant.shop.utility.CommonResponse;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
+	
 	@Autowired
 	private CategoryService categoryService;
 

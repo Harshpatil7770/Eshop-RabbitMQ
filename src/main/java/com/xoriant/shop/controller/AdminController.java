@@ -45,6 +45,7 @@ public class AdminController {
 		return result;
 	}
 
+	
 	@PostMapping("/addUser/{adminId}/{password}")
 	public CommonResponse<?> createUserAccount(@PathVariable long adminId,@PathVariable String password, @RequestBody UserDTO userDTO) {
 		return adminService.createUserAccount(adminId, password, userDTO);

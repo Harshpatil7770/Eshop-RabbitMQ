@@ -20,6 +20,7 @@ import com.xoriant.shop.utility.CommonResponse;
 @RestController
 @RequestMapping("/api/brands")
 public class BrandController {
+	
 
 	@Autowired
 	private BrandService brandService;

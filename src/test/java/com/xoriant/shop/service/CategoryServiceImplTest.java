@@ -102,7 +102,8 @@ class CategoryServiceImplTest {
 		if (checkAdmin.isPresent()) {
 			if (!existingAdmin.get().getPassword().equals(PASSWORD)) {
 				assertThat(new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
-						HttpStatus.BAD_REQUEST));
+						HttpStatus.BAD_REQUEST))
+						.isEqualTo(categoryServiceImpl.addNewCategory(ADMIN_ID, password, categoryDTO));
 			}
 		}
 	}
