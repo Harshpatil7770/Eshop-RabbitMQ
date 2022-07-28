@@ -3,6 +3,7 @@ package com.xoriant.shop.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -39,6 +40,9 @@ class CategoryServiceImplTest {
 
 	@InjectMocks
 	private CategoryServiceImpl categoryServiceImpl;
+
+	@InjectMocks
+	private AdminServiceImpl adminServiceImpl;
 
 	private Admin admin;
 
@@ -135,8 +139,9 @@ class CategoryServiceImplTest {
 		long categoryId = 2001;
 		Optional<Category> checkCategory = categoryRepo.findById(categoryId);
 		if (!checkCategory.isPresent()) {
-			assertThat(
-					new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST));
+			assertThat(new CommonResponse<String>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST,
+					HttpStatus.BAD_REQUEST))
+					.isEqualTo(categoryServiceImpl.findCategoryById(ADMIN_ID, PASSWORD, categoryId));
 		}
 	}
 
@@ -145,7 +150,8 @@ class CategoryServiceImplTest {
 		long adminId = 201;
 		Optional<Admin> existingAdmin = Optional.of(admin);
 		if (existingAdmin.get().getAdminId() != adminId) {
-			assertThat(new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST));
+			assertThat(new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST))
+					.isEqualTo(categoryServiceImpl.updateCategory(adminId, PASSWORD, categoryDTO));
 		}
 	}
 
@@ -158,7 +164,8 @@ class CategoryServiceImplTest {
 		if (checkAdmin.isPresent()) {
 			if (!existingAdmin.get().getPassword().equals(PASSWORD)) {
 				assertThat(new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
-						HttpStatus.BAD_REQUEST));
+						HttpStatus.BAD_REQUEST))
+						.isEqualTo(categoryServiceImpl.updateCategory(ADMIN_ID, password, categoryDTO));
 			}
 		}
 	}
@@ -177,8 +184,8 @@ class CategoryServiceImplTest {
 		long categoryId = 2001;
 		Optional<Category> checkCategory = categoryRepo.findById(categoryId);
 		if (!checkCategory.isPresent()) {
-			assertThat(
-					new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST));
+			assertThat(new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST))
+					.isEqualTo(categoryServiceImpl.findCategoryById(ADMIN_ID, PASSWORD, categoryId));
 		}
 	}
 
@@ -211,12 +218,14 @@ class CategoryServiceImplTest {
 		when(adminRepo.findById(101l)).thenReturn(existingAdmin);
 		Optional<Admin> checkAdmin = adminRepo.findById(101l);
 		if (checkAdmin.get().getAdminId() != ADMIN_ID) {
-			assertThat(new CommonResponse<String>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST,
-					HttpStatus.BAD_REQUEST));
+			assertThat(
+					new CommonResponse<String>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST))
+					.isEqualTo(categoryServiceImpl.updateCategory(105l, PASSWORD, categoryDTO));
 		}
 		if (!checkAdmin.get().getPassword().equals(PASSWORD)) {
 			assertThat(new CommonResponse<String>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST,
-					HttpStatus.BAD_REQUEST));
+					HttpStatus.BAD_REQUEST))
+					.isEqualTo(categoryServiceImpl.updateCategory(ADMIN_ID, "Admin", categoryDTO));
 		}
 
 		Optional<Category> existingCategory = Optional.of(category);

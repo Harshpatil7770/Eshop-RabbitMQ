@@ -51,20 +51,21 @@ public class CategoryServiceImpl implements CategoryService {
 	public CommonResponse<?> updateCategory(Long adminId, String password, CategoryDTO categoryDTO) {
 		try {
 			Optional<Category> existingCategory = categoryRepo.findById(categoryDTO.getCategoryId());
-			if (!existingCategory.isPresent()) {
-				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
-			}
+
 			Optional<Admin> existingAdmin = adminRepo.findById(adminId);
 			if (!existingAdmin.isPresent()) {
-				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.WRONG_ADMIN_ID, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
 			}
 			if (!existingAdmin.get().getPassword().equals(password)) {
-				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.WRONG_ADMIN_PASSWORD, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+			}
+			if (!existingCategory.isPresent()) {
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
 			}
 
 			Category updateCategory = categoryRepo.findById(categoryDTO.getCategoryId()).orElse(null);
 			if (updateCategory == null) {
-				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
 			}
 
 			updateCategory.setCategoryId(categoryDTO.getCategoryId());
@@ -84,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 			Optional<Category> existingCategory = categoryRepo.findById(categoryId);
 			if (!existingCategory.isPresent()) {
-				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.NOT_FOUND, HttpStatus.NOT_FOUND);
+				return new CommonResponse<>(Constant.ELEMENT_NOT_FOUND, StatusCode.BAD_REQUEST, HttpStatus.BAD_REQUEST);
 			}
 
 			return new CommonResponse<>(existingCategory, StatusCode.OK, HttpStatus.OK);
@@ -262,7 +263,7 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void deleteCategory(Long adminId, String password, long categoryId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
